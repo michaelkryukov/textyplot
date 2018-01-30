@@ -6,7 +6,7 @@ Features
 ========
  * Fast
  * Simple
- * Working with Python2 and Python3 (preferred)
+ * Working with Python 3
  * Supports zooming and adjusting the view.
  * Text graphics with UTF-8 (⣧⡇⢸ )
  * Supports python3+
