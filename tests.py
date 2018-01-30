@@ -1,41 +1,134 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
-import unittest, tempfile, math, sys, os
+import unittest, tempfile, math, sys, os, io
 
 from textyplot import *
 
+kwargs_pack = [
+    {},
+    {"zero": False},
+    {"fill": False},
+    {"html": True},
+    {"stretch": False},
+    {"border": False},
+    {"data": False},
+    {"zero": False, "fill": False, "html": True},
+    {"data": False, "border": False, "color": True},
+    {"color": True},
+    {"color": True, "html": True},
+]
 
-class TestStringMethods(unittest.TestCase):
+points_pack = [
+    [i for i in range(50)],
+    [-i for i in range(50)],
+    [50 - i for i in range(50)],
+    [i - 50 for i in range(50)],
+    [math.sin(i / 5) * 5 for i in range(50)],
+    [math.log(i) for i in range(1, 51)],
+    [math.cos(i / 5) * 5 for i in range(50)],
+    [2 ** i for i in range(50)],
+    [i ** 2 for i in range(50)],
+    [0 for i in range(50)],
+    [-100 for i in range(50)],
+    [100 for i in range(50)],
+    [100 + i for i in range(50)],
+    [-100 - i for i in range(50)],
+    [5 for i in range(50)],
+    [-5 for i in range(50)],
+]
+
+class TestTextyplot(unittest.TestCase):
     @staticmethod
     def test_init():
         Plotter((-x + 25 for x in range(50)), height=32)
         Plotter((-x - 1000 for x in range(50)))
         Plotter((15 for x in range(50)))
+        Plotter((0 for x in range(50)), width=64, height=2)
         Plotter((math.sin(x / 10) * 10 for x in range(100)), height=16)
 
     @staticmethod
-    def test_show():
-        plotters = []
+    def test_height():
+        Plotter((-x + 25 for x in range(50)), height=30).render()
+        Plotter((-x + 25 for x in range(50)), height=7).render()
+        Plotter((-x + 25 for x in range(50)), height=1).render()
+        Plotter((-x + 25 for x in range(50)), height=2).render()
 
-        plotters.append(Plotter((-x + 25 for x in range(50)), height=4))
-        plotters.append(Plotter((-x - 1000 for x in range(50)), height=4))
-        plotters.append(Plotter((x + 1000 for x in range(50)), height=4))
-        plotters.append(Plotter((15 for x in range(50)), height=4))
-        plotters.append(Plotter((0 for x in range(50)), height=4))
-        plotters.append(Plotter((math.sin(x / 10) * 10 for x in range(100)), height=4))
+    @staticmethod
+    def test_stretch():
+        Plotter((x for x in range(50)), width=100).render()
+        Plotter((25 - x for x in range(50)), width=100).render()
+        Plotter((math.log(x * 10) for x in range(1, 51)), width=100).render()
+
+    @staticmethod
+    def test_points():
+        for i in range(100):
+            Plotter([10 ** i]).render()
+
+    def test_command_line(self):
+        points = "\n".join(str(i) for i in points_pack[0])
+
+        _stdin, _stdout = sys.stdin, sys.stdout
+        sys.stdout = null = open(os.devnull, "w")
+
+        sys.stdin = io.StringIO(points)
+        run([])
+        sys.stdin.close()
+
+        sys.stdin = io.StringIO(points)
+        run(["-f", "20"])
+        sys.stdin.close()
+
+        sys.stdin = io.StringIO(points)
+        run(["-C"])
+        sys.stdin.close()
+
+        null.close()
+        sys.stdin, sys.stdout = _stdin, _stdout
+
+
+    def test_write_fail(self):
+        null = open(os.devnull, 'r')
+
+        with self.assertRaises(ValueError):
+            Plotter(x for x in range(50)).write(null)
+
+        null.close()
+
+    @staticmethod
+    def test_show():
+        plotters = [Plotter(pack, height=4) for pack in points_pack]
 
         _stdout = sys.stdout
         sys.stdout = null = open(os.devnull, 'w')
 
         for plotter in plotters:
-            plotter.show(border=True)
-            plotter.show(fill=False)
-            plotter.show(color=True, border=True)
-            plotter.show(color=True, border=True, html=True, fill=True)
+            for kwargs in kwargs_pack:
+                plotter.show(**kwargs)
 
         null.close()
         sys.stdout = _stdout
+
+    @staticmethod
+    def test_file():
+        plotters = [Plotter(pack, height=4) for pack in points_pack]
+
+        nulls = [open(os.devnull, 'wb'), open(os.devnull, 'w')]
+
+        for plotter in plotters:
+            for null in nulls:
+                for kwargs in kwargs_pack:
+                    plotter.write(null, **kwargs)
+
+            _, filename = tempfile.mkstemp()
+
+            for kwargs in kwargs_pack:
+                plotter.save(filename, **kwargs)
+
+            os.remove(filename)
+
+        nulls[0].close()
+        nulls[1].close()
 
     def test_sin(self):
         p = Plotter((math.sin(x / 5) * 5 for x in range(100)), height=4)
@@ -101,39 +194,6 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(data[2].count(u"⣿"), 1)
         self.assertEqual(data[3].count(u"⣿"), 0)
 
-    @staticmethod
-    def test_file():
-        plotters = []
-
-        plotters.append(Plotter((-x + 25 for x in range(50)), height=4))
-        plotters.append(Plotter((-x - 1000 for x in range(50)), height=4))
-        plotters.append(Plotter((x + 1000 for x in range(50)), height=4))
-        plotters.append(Plotter((15 for x in range(50)), height=4))
-        plotters.append(Plotter((math.sin(x / 10) * 10 for x in range(100)), height=4))
-
-        null1 = open(os.devnull, 'wb')
-        null2 = open(os.devnull, 'w')
-
-        for plotter in plotters:
-            plotter.write(null1, border=True)
-            plotter.write(null1, fill=False)
-            plotter.write(null1, color=True, border=True)
-            plotter.write(null1, color=True, html=True)
-
-            plotter.write(null2, border=True)
-            plotter.write(null2, fill=False)
-            plotter.write(null2, color=True, border=True)
-            plotter.write(null2, color=True, html=True)
-
-            _, filename = tempfile.mkstemp()
-            plotter.save(filename, border=True)
-            plotter.save(filename, fill=False)
-            plotter.save(filename, color=True, border=True)
-            plotter.save(filename, color=True, html=True)
-            os.remove(filename)
-
-        null1.close()
-        null2.close()
 
 if __name__ == '__main__':
     unittest.main()

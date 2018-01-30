@@ -37,15 +37,6 @@ colors_html = [
 colors_html_end = "</span>"
 
 
-def normalize_size(value):
-    size = math.ceil(value)
-
-    if size % 4:
-        return size + (4 - size % 4)
-
-    return size
-
-
 class Map(object):
     def __init__(self, width, height, fill=True):
         self.width = width + width % 2
@@ -131,8 +122,17 @@ class Plotter:
         sign = "+" if value >= 0 else ""
         avalue = abs(value)
 
+        if avalue >= 1000000000000000000:
+            return sign + str(round(value / 1000000000000000000)) + "BB"
+
+        if avalue >= 1000000000000000:
+            return sign + str(round(value / 1000000000000000)) + "Q"
+
+        if avalue >= 1000000000000:
+            return sign + str(round(value / 1000000000000)) + "T"
+
         if avalue >= 1000000000:
-            return sign + str(round(value / 1000000)) + "MM"
+            return sign + str(round(value / 1000000000)) + "B"
 
         if avalue >= 1000000:
             return sign + str(round(value / 1000000)) + "M"
@@ -208,22 +208,25 @@ class Plotter:
 
         top, bot, ttop, tbot = ubound, bbound, ubound, bbound
 
+        zoomed = False
+
         if zoom:
             zoomed = False
 
-            if ubound < -50 and bbound < -50:
-                points = [p - ubound - 0.5 for p in points]
-                bot -= ubound - 0.5
-                zoomed = True
+            if ubound != bbound:
+                if ubound < -50 and bbound < -50:
+                    points = [p - ubound - 0.5 for p in points]
+                    bot -= ubound - 0.5
+                    zoomed = True
 
-                lbound, rbound, bbound, ubound = self.analyze_array(points)
+                    lbound, rbound, bbound, ubound = self.analyze_array(points)
 
-            elif ubound > 50 and bbound > 50:
-                points = [p - bbound for p in points]
-                top -= bbound
-                zoomed = True
+                elif ubound > 50 and bbound > 50:
+                    points = [p - bbound for p in points]
+                    top -= bbound
+                    zoomed = True
 
-                lbound, rbound, bbound, ubound = self.analyze_array(points)
+                    lbound, rbound, bbound, ubound = self.analyze_array(points)
 
             if bbound >= 0:
                 offset_y = 0
@@ -232,11 +235,10 @@ class Plotter:
                 offset_y = self.height
                 top = 0
 
-            if not zoomed:
-                ttop = top
-                tbot = bot
-
         if not zoomed:
+            ttop = top
+            tbot = bot
+
             if top == bot:
                 if top > 0:
                     bot = 0
@@ -344,7 +346,7 @@ def flow(parsed):
 
     return
 
-def main():
+def main(argv=None):
     import argparse
 
     parser = argparse.ArgumentParser(description='Text mode diagrams with possible colors usin UTF-8 colors.')
@@ -360,7 +362,7 @@ def main():
     parser.add_argument('-f', '--flow', default=0, type=int, metavar='points', help='enable drawing diagram at runtime (only specified amount of poitns are drawn)')
     parser.add_argument('-X', '--width', default=80, type=int, metavar='characters', help='drawing max width (default: 80)')
     parser.add_argument('-Y', '--height', default=8, type=int, metavar='characters', help='drawing height (default: 8)')
-    parsed = parser.parse_args()
+    parsed = parser.parse_args(argv)
 
     if parsed.flow:
         try:
@@ -377,6 +379,10 @@ def main():
             points.append(float(value))
         except ValueError:
             break
+
+    if len(points) < 1:
+        print("No points!")
+        return
 
     Plotter(points[::-1] if parsed.reverse else points, width=parsed.width, height=parsed.height).show(
         zoom=parsed.zoom, border=parsed.border, data=parsed.data, color=parsed.color,

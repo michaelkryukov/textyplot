@@ -6,4 +6,7 @@ __credits__ = ['Wijnand Modderman-Lenstra', 'Adam Tauber', 'Erik Rose', 'Jeff Qu
 __version__ = "1.0"
 __license__ = 'MIT'
 
-__all__ = ["Plotter", "Screen"]
+
+run = main
+
+__all__ = ["Plotter", "Screen", "run"]

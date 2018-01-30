@@ -5,3 +5,4 @@ duild
 
 *.pyc
 *.egg-info
+coverage.xml
