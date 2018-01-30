@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
-import locale, math, sys, re
+import locale, sys, re
 
 if sys.platform == 'darwin':
     locale.setlocale(locale.LC_CTYPE, str('UTF-8'))

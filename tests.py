@@ -65,7 +65,8 @@ class TestTextyplot(unittest.TestCase):
         for i in range(100):
             Plotter([10 ** i]).render()
 
-    def test_command_line(self):
+    @staticmethod
+    def test_command_line():
         points = "\n".join(str(i) for i in points_pack[0])
 
         _stdin, _stdout = sys.stdin, sys.stdout
