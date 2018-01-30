@@ -12,6 +12,7 @@ setup(
     test_suite='tests',
     author='Krukov Michael',
     author_email='krukov.michael@ya.ru',
+    url='https://github.com/michaelkrukov/textyplot',
     keywords=['diagram', 'graph', 'plotting', 'text'],
     py_modules=['textyplot'],
     entry_points={

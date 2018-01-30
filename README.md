@@ -11,6 +11,25 @@ Features
  * Text graphics with UTF-8 (⣧⡇⢸ )
  * Supports python3+
 
+Installation
+============
+It's recommended to use pip to install/update.
+
+To install:
+```
+sudo pip install textyplot
+```
+
+To update:
+```
+sudo pip install -U textyplot
+```
+
+To install from github:
+```
+sudo pip install git+https://github.com/michaelkrukov/textyplot.git
+```
+
 Code
 ===========
 ```

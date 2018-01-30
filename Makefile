@@ -1,10 +1,10 @@
 all: clean compile
 
-compile:
+compile: test clean
 	python3.6 setup.py sdist
 
-upload:
-	python3.6 setup.py register sdist upload
+upload: compile
+	twine upload dist/*
 
 test:
 	python3.6 tests.py
