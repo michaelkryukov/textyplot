@@ -9,9 +9,29 @@ Features
  * Working with Python2 and Python3 (preferred)
  * Supports zooming and adjusting the view.
  * Text graphics with UTF-8 (⣧⡇⢸ )
+ * Supports python3+
 
 Code
 ===========
+```
+import textyplot
+
+plotter = textyplot.Plotter(points, width=80, height=8)
+
+plotter.show(
+  zoom=True, data=True, border=True,
+  color=False, fill=True, zero=True,
+  html=False, stretch=True
+)
+
+plotter.save("file.txt", border=True)
+
+with open("file.txt", "w") as o:
+  plotter.write(o, color=True, html=True)
+```
+
+Code examples
+=============
 ```
 import textyplot
 
@@ -23,8 +43,6 @@ plotter.show()
 ```
 ![Result](/docs/code0.png)
 
-Code examples
-=============
 ```
 import textyplot
 

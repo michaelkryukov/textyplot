@@ -1,23 +1,15 @@
-from __future__ import print_function
-from __future__ import unicode_literals
+#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
 
 import locale, math, sys, re
 
-# Fix for Python2
-try:
-    range = xrange
-    chr = unichr
-except NameError:
-    pass
-
-# Setup locale. Second argument should be a native str (bytes on python2, unicode on python3)
 if sys.platform == 'darwin':
     locale.setlocale(locale.LC_CTYPE, str('UTF-8'))
 else:
     locale.setlocale(locale.LC_ALL, str(''))
 
-sign = lambda x: (1, -1)[x < 0]
 
+sign = lambda x: (1, -1)[x < 0]
 
 base = 10240
 line = 818
@@ -200,8 +192,9 @@ class Plotter:
             points = []
 
             block = self.width // len(self.points)
-            for p in self.points:
-                points += [p] * block
+            for i, p in enumerate(self.points):
+                k = (0 if i + 1 >= len(self.points) else self.points[i + 1] - self.points[i]) / block
+                points += [p + i * k for i in range(block)]
 
         else:
             points = self.points[::]
@@ -305,7 +298,10 @@ class Plotter:
 
         diagram = self.render(**kwargs)
 
-        return file_out.write(bytes(diagram, "utf-8") if file_out.mode == "wb" else diagram)
+        if file_out.mode == "wb":
+            return file_out.write(bytes(diagram, "utf-8"))
+
+        return file_out.write(diagram)
 
     def save(self, file_out_name, **kwargs):
         with open(file_out_name, "w") as o:
@@ -389,8 +385,4 @@ def main():
     )
 
 if __name__ == '__main__':
-    Plotter((10000, 10010, 10020, 10010, 10000), width=5, height=8).show()
-    Plotter((-10000, -10010, -10020, -10010, -10000), width=5, height=8).show()
-    exit()
-
     main()

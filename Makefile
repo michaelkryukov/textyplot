@@ -6,13 +6,7 @@ compile:
 upload:
 	python3.6 setup.py register sdist upload
 
-push:
-	git add .
-	git commit
-	git push origin master
-
 test:
-	python tests.py
 	python3.6 tests.py
 
 clean:
