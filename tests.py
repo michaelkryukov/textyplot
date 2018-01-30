@@ -7,13 +7,15 @@ from textyplot import *
 
 
 class TestStringMethods(unittest.TestCase):
-    def test_init(self):
+    @staticmethod
+    def test_init():
         Plotter((-x + 25 for x in range(50)), height=32)
         Plotter((-x - 1000 for x in range(50)))
         Plotter((15 for x in range(50)))
         Plotter((math.sin(x / 10) * 10 for x in range(100)), height=16)
 
-    def test_show(self):
+    @staticmethod
+    def test_show():
         plotters = []
 
         plotters.append(Plotter((-x + 25 for x in range(50)), height=4))
@@ -44,7 +46,10 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(len(tops[1]), len(tops[2]))
 
         bots = data[-1].split(u"⣿⣿")
-        self.assertEqual(len(tops[1]), len(tops[2]))
+        try:
+            self.assertEqual(len(bots[1]), len(bots[2]))
+        except AssertionError:
+            self.assertEqual(len(bots[1]) - 1, len(bots[2]))
 
         mids = data[1].split(u"⣿̲⣿̲⣿̲⣿̲")
         self.assertEqual(len(mids[1]), len(mids[2]))
@@ -96,7 +101,8 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(data[2].count(u"⣿"), 1)
         self.assertEqual(data[3].count(u"⣿"), 0)
 
-    def test_file(self):
+    @staticmethod
+    def test_file():
         plotters = []
 
         plotters.append(Plotter((-x + 25 for x in range(50)), height=4))

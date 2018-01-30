@@ -1,6 +1,7 @@
 Textyplot
 =========
 Simple, light project for drawing your diagrams with only text.
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b61f81c2d568445fb297b1ff6caff8d6)](https://www.codacy.com/app/michaelkrukov/textyplot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=michaelkrukov/textyplot&amp;utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/michaelkrukov/textyplot.svg?branch=master)](https://travis-ci.org/michaelkrukov/textyplot) 
 
 Features
 ========

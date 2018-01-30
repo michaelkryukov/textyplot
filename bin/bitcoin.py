@@ -13,8 +13,7 @@ with Telnet('ticker.bitcointicker.co', 10080) as tn:
                 if skip:
                     skip = not skip
                     continue
-                
-                print(match.group(1))
-                sys.stdout.flush()
+
+                print(match.group(1)); sys.stdout.flush()
         except KeyboardInterrupt:
             break

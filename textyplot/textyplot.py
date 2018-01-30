@@ -145,7 +145,8 @@ class Plotter:
 
         return sign + str(round(value))
 
-    def colorize(self, array, meta=(0, 0, 0)):
+    @staticmethod
+    def colorize(array, meta=(0, 0, 0)):
         max_color = len(colors)
         arrheight = len(array)
 
@@ -164,7 +165,8 @@ class Plotter:
 
         return newarrray
 
-    def htmlize(self, data):
+    @staticmethod
+    def htmlize(data):
         pattern = "(" + "|".join("(" + re.escape(color) + ")" for color in colors) + "|" + re.escape(silent) + ")"
         mapping = {e: i for i, e in enumerate(colors)}
         mapping[silent] = -1
@@ -184,7 +186,8 @@ class Plotter:
 
         return html
 
-    def analyze_array(self, array):
+    @staticmethod
+    def analyze_array(array):
         return 0, len(array), min(array), max(array)
 
     def render(self, zoom=True, data=True, border=True, color=False, fill=True, zero=True, html=False, stretch=True):
@@ -261,7 +264,6 @@ class Plotter:
         if color:
             diagram = self.colorize(diagram, meta=(ubound, bbound, offset_y))
 
-        offset_x = 0
         if data:
             plots = [["", self.textify_value(top)]]
             for i in range(1, len(diagram) - 1):
@@ -329,10 +331,7 @@ def flow(parsed):
             p.points = p.points[- parsed.flow  + amount % 2:]
 
         if text:
-            command = ""
-            for i in range(parsed.height + 2):
-                command += "\033[F\033[K"
-            print(command, end="")
+            print("\033[F\033[K" * (parsed.height + 2), end="")
 
         text = p.render(
             zoom=parsed.zoom, border=parsed.border, data=parsed.data, color=parsed.color,
