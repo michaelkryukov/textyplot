@@ -15,3 +15,7 @@ script:
   - ./bin/random 100 | python textyplot -X 10 -Y 8
   - ./bin/random 100 | python textyplot -X 80 -Y 32 -B
   - python tests.py
+  - pip install codacy-coverage
+  - coverage run tests.py
+  - coverage xml
+  - python-codacy-coverage -r coverage.xml

@@ -118,7 +118,8 @@ class Plotter:
         self.width = (width * 2) if width is not None else len(self.points)
         self.height = (height * 4) if height is not None else 24
 
-    def textify_value(self, value):
+    @staticmethod
+    def textify_value(value):
         sign = "+" if value >= 0 else ""
         avalue = abs(value)
 
