@@ -87,7 +87,6 @@ class TestTextyplot(unittest.TestCase):
         null.close()
         sys.stdin, sys.stdout = _stdin, _stdout
 
-
     def test_write_fail(self):
         null = open(os.devnull, 'r')
 
