@@ -1,0 +1,16 @@
+language: python
+
+python:
+  - 2.7
+  - 3.4
+  - 3.6
+
+script:
+  - ./bin/random 100 | python textyplot
+  - ./bin/random 100 | python textyplot -B
+  - ./bin/random 100 | python textyplot -CD
+  - ./bin/random 100 | python textyplot -D
+  - ./bin/random 100 | python textyplot -R
+  - ./bin/random 100 | python textyplot -X 10 -Y 8
+  - ./bin/random 100 | python textyplot -X 80 -Y 32 -B
+  - python tests.py
